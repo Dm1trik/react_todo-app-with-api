@@ -1,12 +1,12 @@
 import React from 'react';
 import { Filter } from '../Filter';
 import { Todo } from '../../types/Todo';
-import { FILTERS } from '../../types/Filters';
+import { Filters } from '../../types/Filters';
 
 type Props = {
   todos: Todo[];
-  selectedStatus: FILTERS;
-  onSelectedStatus: (selectedStatus: FILTERS) => void;
+  selectedStatus: Filters;
+  onSelectedStatus: (selectedStatus: Filters) => void;
   onClearCompleted: () => void;
 };
 

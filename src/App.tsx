@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import {
@@ -13,18 +12,19 @@ import { TodoList } from './Components/TodoList';
 import { ErrorNotification } from './Components/ErrorNotification';
 import { Todo } from './types/Todo';
 import { Footer } from './Components/Footer/Footer';
-import { FILTERS } from './types/Filters';
+import { Filters } from './types/Filters';
+import { Errors } from './types/Errors';
 
-function getFilteredTodos(todos: Todo[], selectedStatus: FILTERS) {
+function getFilteredTodos(todos: Todo[], selectedStatus: Filters) {
   return todos.filter(todo => {
     switch (selectedStatus) {
-      case FILTERS.active:
+      case Filters.Active:
         return !todo.completed;
 
-      case FILTERS.completed:
+      case Filters.Completed:
         return todo.completed;
 
-      case FILTERS.all:
+      case Filters.All:
       default:
         return true;
     }
@@ -33,8 +33,8 @@ function getFilteredTodos(todos: Todo[], selectedStatus: FILTERS) {
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState(FILTERS.all);
+  const [errorMessage, setErrorMessage] = useState(Errors.None);
+  const [selectedStatus, setSelectedStatus] = useState(Filters.All);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [loadingTodoIds, setLoadingTodoIds] = useState<number[]>([]);
 
@@ -45,14 +45,14 @@ export const App: React.FC = () => {
   }, [todos, selectedStatus]);
 
   useEffect(() => {
-    setErrorMessage('');
+    setErrorMessage(Errors.None);
     getTodos()
       .then(setTodos)
-      .catch(() => setErrorMessage('Unable to load todos'));
+      .catch(() => setErrorMessage(Errors.Load));
   }, []);
 
   function addTodo(title: string) {
-    setErrorMessage('');
+    setErrorMessage(Errors.None);
 
     setTempTodo({
       id: 0,
@@ -70,7 +70,7 @@ export const App: React.FC = () => {
         setTodos(currentTodos => [...currentTodos, newTodo]);
       })
       .catch(err => {
-        setErrorMessage('Unable to add a todo');
+        setErrorMessage(Errors.Add);
         throw err;
       })
       .finally(() => {
@@ -79,7 +79,7 @@ export const App: React.FC = () => {
   }
 
   function removeTodo(todoId: number) {
-    setErrorMessage('');
+    setErrorMessage(Errors.None);
 
     setLoadingTodoIds(currentIds => [...currentIds, todoId]);
 
@@ -90,7 +90,7 @@ export const App: React.FC = () => {
         );
       })
       .catch(err => {
-        setErrorMessage('Unable to delete a todo');
+        setErrorMessage(Errors.Delete);
         throw err;
       })
       .finally(() => {
@@ -108,7 +108,7 @@ export const App: React.FC = () => {
   }
 
   function toggleTodo(todoToUpdate: Todo) {
-    setErrorMessage('');
+    setErrorMessage(Errors.None);
     setLoadingTodoIds(currentIds => [...currentIds, todoToUpdate.id]);
 
     return updateTodo({
@@ -123,7 +123,7 @@ export const App: React.FC = () => {
         );
       })
       .catch(err => {
-        setErrorMessage('Unable to update a todo');
+        setErrorMessage(Errors.Update);
         throw err;
       })
       .finally(() => {
@@ -134,7 +134,7 @@ export const App: React.FC = () => {
   }
 
   function renameTodo(todoToUpdate: Todo, newTitle: string) {
-    setErrorMessage('');
+    setErrorMessage(Errors.None);
     setLoadingTodoIds(currentIds => [...currentIds, todoToUpdate.id]);
 
     return updateTodo({
@@ -149,7 +149,7 @@ export const App: React.FC = () => {
         );
       })
       .catch(err => {
-        setErrorMessage('Unable to update a todo');
+        setErrorMessage(Errors.Update);
         throw err;
       })
       .finally(() => {

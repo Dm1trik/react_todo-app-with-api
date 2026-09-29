@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { Todo } from '../../types/Todo';
+import { Errors } from '../../types/Errors';
 
 type Props = {
   todos: Todo[];
   onAdd: (title: string) => Promise<unknown>;
-  onErrorMessage: (errorMessage: string) => void;
+  onErrorMessage: (errorMessage: Errors) => void;
   inputRef: React.RefObject<HTMLInputElement>;
   onToggle: (todo: Todo) => Promise<void>;
 };
@@ -32,7 +33,7 @@ export const NewTodo: React.FC<Props> = ({
     const trimmedTitle = title.trim();
 
     if (!trimmedTitle) {
-      onErrorMessage('Title should not be empty');
+      onErrorMessage(Errors.EmptyTitle);
 
       return;
     }
@@ -41,7 +42,9 @@ export const NewTodo: React.FC<Props> = ({
 
     onAdd(trimmedTitle)
       .then(() => setTitle(''))
-      .catch(() => {})
+      .catch(() => {
+        onErrorMessage(Errors.Add);
+      })
       .finally(() => {
         setIsSubmitting(false);
       });

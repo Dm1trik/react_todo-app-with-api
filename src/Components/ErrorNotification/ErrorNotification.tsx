@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import cn from 'classnames';
+import { Errors } from '../../types/Errors';
 
 type Props = {
-  errorMessage: string;
-  onErrorMessage: (errorMessage: string) => void;
+  errorMessage: Errors;
+  onErrorMessage: (errorMessage: Errors) => void;
 };
 
 export const ErrorNotification: React.FC<Props> = ({
@@ -11,7 +12,7 @@ export const ErrorNotification: React.FC<Props> = ({
   onErrorMessage,
 }) => {
   const handleCloseError = useCallback(() => {
-    onErrorMessage('');
+    onErrorMessage(Errors.None);
   }, [onErrorMessage]);
 
   useEffect(() => {
